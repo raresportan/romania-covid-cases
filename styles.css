@@ -9,6 +9,10 @@ body {
     color: #444;
 }
 
+html{
+    scroll-behavior: smooth;
+}
+
 main {
     margin: 1rem;
     display: none;
