@@ -153,7 +153,7 @@ select {
     }
 
     .map {
-        transform: scale(0.5);
+        transform: scale(0.6);
         margin-top: -100px;
     }
 }
