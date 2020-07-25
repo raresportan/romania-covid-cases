@@ -1,0 +1,155 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    font-family: 'IBM Plex Sans', sans-serif;
+    color: #444;
+}
+
+main {
+    margin: 1rem;
+    display: none;
+}
+
+h1 {
+    margin: 3rem 2rem 0;
+}
+
+h2 {
+    margin: 0 2rem;
+    font-size: 1.2rem;
+}
+
+h2 span {
+    font-weight: normal;
+}
+
+.hero {
+    display: flex;
+}
+
+.allTimeCases {
+    margin: 1rem;
+    min-width: 40%;
+    flex-grow: 1;
+}
+
+.counties {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 1rem auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.counties article {
+    margin: 1rem;
+}
+
+.counties article header {
+    font-weight: 600;
+    padding-left: 1rem;
+}
+
+.counties article header span {
+    font-weight: normal;
+    padding-left: 1rem;
+}
+
+.counties article {
+    width: 320px;
+    height: 224px;
+}
+
+
+.ct-series-a .ct-line {
+    stroke: red;
+    stroke-width: 3px;
+}
+
+.ct-series-a .ct-point {
+    stroke: red;
+    stroke-width: 3px;
+}
+
+ul {
+    list-style: none;
+    display: flex;
+    padding: 0;
+    margin: 2rem;
+}
+
+ul li {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+
+footer {
+    margin: 2rem;
+}
+
+select {
+    padding: .2rem;
+    font-size: 1rem;
+}
+
+.map {
+    fill: rgba(255, 0, 0, 0.2);
+    stroke: #fff;
+}
+
+.map>path {
+    cursor: pointer;
+}
+
+#tooltip {
+    position: absolute;
+    background-color: #222;
+    color: #fff;
+    padding: .5rem;
+    top: -300px;
+}
+
+@media only screen and (max-width: 1100px) {
+    .map {
+        transform: scale(0.8);
+        margin-top: -60px;
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    .hero {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .allTimeCases {
+        min-width: 100%;
+    }
+
+}
+
+@media only screen and (max-width: 480px) {
+
+    h1,
+    footer {
+        margin: 1rem;
+    }
+
+    h2 {
+        margin: 0 1rem;
+    }
+
+    .allTimeCases {
+        margin: 1rem 0;
+    }
+
+    .map {
+        transform: scale(0.5);
+        margin-top: -100px;
+    }
+}
