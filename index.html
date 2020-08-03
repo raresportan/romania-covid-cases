@@ -170,22 +170,22 @@
 
         </div>
     </main>
-    <script src="main.js"></script>
+    <script src="app.js"></script>
     <script>
-        const map = document.querySelector('.map');
+        var map = document.querySelector('.map');
         map.addEventListener('click', traker.showCounty);
         map.addEventListener('mouseover', traker.highlight);
         map.addEventListener('mouseout', traker.removeHighlight);
 
-        const newcasesButton = document.querySelector('#newcases');
-        newcasesButton.addEventListener('click', () => {
+        var newcasesButton = document.querySelector('#newcases');
+        newcasesButton.addEventListener('click', function () {
             traker.sort('newcases')
             newcasesButton.className = 'selected';
             allcasesButton.className = '';
         });
 
-        const allcasesButton = document.querySelector('#allcases');
-        allcasesButton.addEventListener('click', () => {
+        var allcasesButton = document.querySelector('#allcases');
+        allcasesButton.addEventListener('click', function () {
             traker.sort('allcases');
             newcasesButton.className = '';
             allcasesButton.className = 'selected';

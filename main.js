@@ -81,19 +81,9 @@
     };
 
     const chartRefereces = {}
+    const svgData = {}
 
     const numberFormat = new Intl.NumberFormat();
-
-    const sortByLabel = (a, b) => {
-        const al = a && a.dataset ? a.dataset.label : a.label;
-        const bl = b && b.dataset ? b.dataset.label : b.label;
-        if (al < bl) {
-            return -1;
-        } else if (al > bl) {
-            return 1;
-        }
-        return 0;
-    }
     const sortByNewCases = (a, b) => (+b.dataset.newcases) - (+a.dataset.newcases);
     const sortByTotalCases = (a, b) => (+b.dataset.totalcases) - (+a.dataset.totalcases);
     let transformedData = null;
@@ -177,7 +167,8 @@
     const createDOM = (sortData) => {
         const container = document.querySelector('.counties');
         container.innerHTML = '';
-        sortData.forEach(sd => {
+
+        const articles = sortData.map(sd => {
             const { newCases, totalCases, label, key } = sd;
             const svg = document.getElementById(key);
             if (svg) {
@@ -212,11 +203,14 @@
                     newCasesColor = colors[4]
                 }
                 svg.style.fill = newCasesColor;
-                svg.dataset.totalCasesColor = totalCasesColor;
-                svg.dataset.newCasesColor = newCasesColor;
-                svg.dataset.label = sd.label;
-                svg.dataset.newcases = newCases;
-                svg.dataset.totalcases = totalCases;
+
+                svgData[key] = {
+                    totalCasesColor,
+                    newCasesColor,
+                    label: sd.label,
+                    newCases,
+                    totalCases
+                }
             }
 
 
@@ -225,6 +219,7 @@
             if (!article) {
                 article = document.createElement('article');
                 article.dataset.label = sd.label;
+                article.dataset.key = key.toLowerCase();
 
                 header = document.createElement('header');
                 article.appendChild(header);
@@ -232,7 +227,6 @@
                 const chartDiv = document.createElement('div');
                 chartDiv.className = 'ct-chart-' + key.toLowerCase();
                 article.appendChild(chartDiv);
-                container.appendChild(article);
 
             }
             article.dataset.newcases = newCases;
@@ -245,17 +239,15 @@
                 ]
             };
 
-            chartRefereces[key.toLowerCase()] = new Chartist.Line('.ct-chart-' + key.toLowerCase(), data, smallChartOptions);
+            article.data = data;
+            return article;
         })
-    }
 
-
-    const sortDataBy = sortBy => {
-        const arr = Object.keys(transformedData).map(k => transformedData[k]);
-        const sortedData = arr.sort(sortBy)
-
-        createAllCasesDOM(allTimeDiffs);
-        createDOM(sortedData);
+        const sortedArticles = articles.sort(sortByNewCases)
+        sortedArticles.forEach(article => {
+            container.appendChild(article);
+            chartRefereces[article.dataset.key] = new Chartist.Line('.ct-chart-' + article.dataset.key, article.data, smallChartOptions);
+        })
     }
 
     // use data 
@@ -273,7 +265,10 @@
             numberDeceased,
             lasUpdatedOn: data.lasUpdatedOn
         });
-        document.querySelector('.sort').style.display = 'flex';
+
+        if (!/Trident\/|MSIE/.test(window.navigator.userAgent)) {
+            document.querySelector('.sort').style.display = 'flex';
+        }
 
         const sortedData = Object.keys(transformedData).map(k => transformedData[k]);
 
@@ -306,15 +301,12 @@
             case "newcases":
                 compareFunction = sortByNewCases;
                 break;
-            case "totalcases":
+            case "allcases":
                 compareFunction = sortByTotalCases;
                 break;
-            default:
-                compareFunction = sortByLabel
-
         }
 
-        const articles = Array.from(document.querySelectorAll('.counties > article'))
+        const articles = Array.prototype.slice.call(document.querySelectorAll('.counties > article'))
         const sortedArticles = articles.sort(compareFunction)
         const container = document.querySelector('.counties')
 
@@ -322,46 +314,24 @@
         sortedArticles.forEach(a => {
             container.appendChild(a);
 
-            const chartDiv = a.querySelector('div');
-            const className = chartDiv.className;
-            const key = /--/g.test(className) ? '-' : className.split('-').pop();
-            let data = {};
-            let allData = {}
+            const key = a.dataset.key;
+            let data = { series: [] };
+            data.series[0] = selection === 'newcases' ? [...transformedData[key.toUpperCase()].caseDiffs] : [...transformedData[key.toUpperCase()].cases]
 
-            if (selection === 'newcases') {
-                data = {
-                    series: [
-                        [...transformedData[key.toUpperCase()].caseDiffs]
-                    ]
-                };
-
-                allData = {
-                    series: [
-                        [...allTimeDiffs]
-                    ]
-                };
-            } else {
-                data = {
-                    series: [
-                        [...transformedData[key.toUpperCase()].cases]
-                    ]
-                };
-                allData = {
-                    series: [
-                        [...allTimeCases]
-                    ]
-                };
-            }
             const chart = chartRefereces[key];
             chart.update(data, smallChartOptions);
-
-            const bigChart = chartRefereces['all'];
-            bigChart.update(allData, bigChartOptions)
         });
 
-        const svgs = Array.from(document.querySelectorAll('.map > path'));
+        let allData = { series: [] }
+        allData.series[0] = selection === 'newcases' ? [...allTimeDiffs] : [...allTimeCases]
+        const bigChart = chartRefereces['all'];
+        bigChart.update(allData, bigChartOptions)
+
+
+        const svgs = Array.prototype.slice.call(document.querySelectorAll('.map > path'));
         svgs.forEach(s => {
-            s.style.fill = selection === 'newcases' ? s.dataset.newCasesColor : s.dataset.totalCasesColor
+            const data = svgData[s.id];
+            s.style.fill = selection === 'newcases' ? data.newCasesColor : data.totalCasesColor
         })
     }
 
@@ -369,17 +339,20 @@
     const highlight = e => {
         const target = e.target;
         const tooltip = document.getElementById('tooltip');
-        if (target.dataset && target.dataset.label) {
-            const label = target.dataset.label;
-            const newcases = numberFormat.format(target.dataset.newcases);
-            const totalcases = numberFormat.format(target.dataset.totalcases);
+        if (target.id) {
+            const data = svgData[target.id];
+            if (data) {
+                const label = data.label;
+                const newcases = numberFormat.format(data.newCases);
+                const totalcases = numberFormat.format(data.totalCases);
 
-            target.style.opacity = '0.8'
-            const { pageX, pageY } = event;
-            const tooltip = document.getElementById('tooltip');
-            tooltip.innerHTML = label + ' ' + totalcases + (newcases ? ' (+' + newcases + ')' : '')
-            tooltip.style.top = (pageY - 60) + 'px'
-            tooltip.style.left = (pageX - 60) + 'px'
+                target.style.opacity = '0.8'
+                const { pageX, pageY } = event;
+                const tooltip = document.getElementById('tooltip');
+                tooltip.innerHTML = label + ' ' + totalcases + (newcases ? ' (+' + newcases + ')' : '')
+                tooltip.style.top = (pageY - 60) + 'px'
+                tooltip.style.left = (pageX - 60) + 'px'
+            }
 
         } else {
             tooltip.style.top = '-300px';
@@ -395,8 +368,8 @@
 
     const showCounty = e => {
         const target = e.target;
-        if (target.dataset && target.dataset.label) {
-            const label = target.dataset.label;
+        if (target.id) {
+            const label = svgData[id].label;
             console.log(label);
             const el = document.querySelector(`article[data-label="${label}"]`);
             console.log(el);
