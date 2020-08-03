@@ -1,5 +1,4 @@
-html,
-body {
+html, body {
     width: 100%;
     height: 100%;
     border: 0;
@@ -9,13 +8,12 @@ body {
     color: #444;
 }
 
-html{
+html {
     scroll-behavior: smooth;
 }
 
 main {
     margin: 1rem;
-    display: none;
 }
 
 h1 {
@@ -33,6 +31,12 @@ h2 span {
 
 .hero {
     display: flex;
+    flex-direction: row-reverse;
+    margin-bottom: 1rem;
+}
+
+.sort {
+    display: none;
 }
 
 .allTimeCases {
@@ -67,7 +71,6 @@ h2 span {
     width: 320px;
     height: 224px;
 }
-
 
 .ct-series-a .ct-line {
     stroke: red;
@@ -127,31 +130,24 @@ select {
 
 @media only screen and (max-width: 1024px) {
     .hero {
-        flex-direction: column;
+        flex-direction: column-reverse;
         align-items: center;
     }
-
     .allTimeCases {
         min-width: 100%;
     }
-
 }
 
 @media only screen and (max-width: 480px) {
-
-    h1,
-    footer {
+    h1, footer {
         margin: 1rem;
     }
-
     h2 {
         margin: 0 1rem;
     }
-
     .allTimeCases {
         margin: 1rem 0;
     }
-
     .map {
         transform: scale(0.6);
         margin-top: -100px;

@@ -16,13 +16,17 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"></script>
     <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
     <script src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
+    <script src="fetch.umd.js"></script>
 </head>
 
 <body>
     <h1>Romania <span role="img" aria-label="Romanian Flag">🇷🇴</span> COVID-19 cases <span></span></h1>
-    <h2 class="status">Loading data...</h2>
+    <h2 class="status">
+        <div>Loading data...</div>
+    </h2>
     <main>
         <div class="hero">
             <section class="allTimeCases"></section>
@@ -157,13 +161,16 @@
             </svg>
         </div>
 
-        <label for="sort-select">Sort by</label>
-        <select name="sort-options" id="sort-select" onchange="sort(event)">
-            <option value="alphabetically" selected>County Name</option>
-            <option value="newcases">New cases</option>
-            <option value="totalcases">Total cases</option>
-        </select>
-        <section class="counties"></section>
+        <div class="sort">
+            <label for="sort-select">Sort by</label>
+            <select name="sort-options" id="sort-select" onchange="sort(event)">
+                <option value="alphabetically" selected>County Name</option>
+                <option value="newcases">New cases</option>
+                <option value="totalcases">Total cases</option>
+            </select>
+        </div>
+        <section class="counties">
+        </section>
         <div id="tooltip">
 
         </div>
