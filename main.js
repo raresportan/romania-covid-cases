@@ -257,7 +257,7 @@ const use = data => {
     }, [])
     createDOM(sortedData, allTimeCases);
 
-    document.querySelector('main').style.display = 'block';
+    document.querySelector('.sort').style.display = 'block';
 }
 
 
