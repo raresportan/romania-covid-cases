@@ -1,0 +1,23 @@
+{
+  "name": "romania-covid-cases",
+  "version": "1.0.0",
+  "description": "Evolution of COVID-19 cases in Romania ",
+  "main": "main.js",
+  "scripts": {
+    "build": "babel main.js -o app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raresportan/romania-covid-cases.git"
+  },
+  "author": "Rares Portan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/raresportan/romania-covid-cases/issues"
+  },
+  "homepage": "https://github.com/raresportan/romania-covid-cases#readme",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
+  }
+}
