@@ -407,7 +407,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
   fetch('https://datelazi.ro/latestData.json').then(function (result) {
     return result.json();
-  }).then(use)["catch"](showError);
+  }).then(use)["catch"](function () {
+    // try another one
+    fetch('https://di5ds1eotmbx1.cloudfront.net/latestData.json').then(function (result) {
+      return result.json();
+    }).then(use)["catch"](showError);
+  });
   window.traker = window.traker || {
     highlight: highlight,
     removeHighlight: removeHighlight,

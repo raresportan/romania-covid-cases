@@ -391,7 +391,13 @@
     fetch('https://datelazi.ro/latestData.json')
         .then(result => result.json())
         .then(use)
-        .catch(showError);
+        .catch(() => {
+            // try another one
+            fetch('https://di5ds1eotmbx1.cloudfront.net/latestData.json')
+                .then(result => result.json())
+                .then(use)
+                .catch(showError)
+        });
 
 
     window.traker = window.traker || {
