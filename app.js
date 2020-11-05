@@ -265,9 +265,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
   var use = function use(data) {
     transformedData = transform(data);
-    var newCases = Object.keys(transformedData).reduce(function (acc, current) {
-      return acc + transformedData[current].newCases;
+    var lastCases = Object.keys(data.historicalData).reduce(function (acc, current) {
+      console.log(data.historicalData[current].numberInfected);
+      return Math.max(acc, data.historicalData[current].numberInfected);
     }, 0);
+    var newCases = data.currentDayStats.numberInfected - lastCases;
     var _data$currentDayStats = data.currentDayStats,
         numberInfected = _data$currentDayStats.numberInfected,
         numberCured = _data$currentDayStats.numberCured,
