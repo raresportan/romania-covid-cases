@@ -254,7 +254,6 @@
     const use = data => {
         transformedData = transform(data);
         const lastCases = Object.keys(data.historicalData).reduce((acc, current) => {
-            console.log(data.historicalData[current].numberInfected);
             return Math.max(acc, data.historicalData[current].numberInfected);
         }, 0);
         
