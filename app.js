@@ -76,7 +76,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     width: 320,
     height: 200,
     low: 0,
-    //high: 10000,
+    // high: 2000,
     showArea: true,
     axisX: {
       showLabel: false,
@@ -113,7 +113,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       day: 'numeric'
     };
     var headerSpan = document.querySelectorAll('h1 span')[1];
-    headerSpan.innerHTML = "on ".concat(new Date(lasUpdatedOn * 1000).toLocaleDateString(undefined, options));
+    headerSpan.innerHTML = "on ".concat(new Date(lasUpdatedOn).toLocaleDateString(undefined, options));
   }; // transform received data in what UI needs
 
 
@@ -249,8 +249,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       article.dataset.newcases = newCases;
       article.dataset.totalcases = totalCases;
       header.innerHTML = label + '<span>' + new Intl.NumberFormat().format(totalCases) + (newCases ? '  (+' + new Intl.NumberFormat().format(newCases) + ')' : '') + '</span>';
+      var days = sd.caseDiffs.length;
+      var caseDiffs = days > 100 ? sd.caseDiffs.filter(function (v, index) {
+        return index > days - 100;
+      }) : sd.caseDiffs;
       var data = {
-        series: [_toConsumableArray(sd.caseDiffs)]
+        series: [_toConsumableArray(caseDiffs)]
       };
       article.data = data;
       return article;
@@ -278,7 +282,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       numberInfected: numberInfected,
       numberCured: numberCured,
       numberDeceased: numberDeceased,
-      lasUpdatedOn: data.lasUpdatedOn
+      lasUpdatedOn: data.currentDayStats.parsedOnString
     });
 
     if (!/Trident\/|MSIE/.test(window.navigator.userAgent)) {
@@ -334,7 +338,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var data = {
         series: []
       };
-      data.series[0] = selection === 'newcases' ? _toConsumableArray(transformedData[key.toUpperCase()].caseDiffs) : _toConsumableArray(transformedData[key.toUpperCase()].cases);
+      data.series[0] = selection === 'newcases' ? _toConsumableArray(transformedData[key.toUpperCase()].caseDiffs.filter(function (v, index, arr) {
+        return index > arr.length - 100;
+      })) : _toConsumableArray(transformedData[key.toUpperCase()].cases);
       var chart = chartRefereces[key];
       chart.update(data, smallChartOptions);
     });
@@ -388,9 +394,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
     if (target.id) {
       var label = svgData[id].label;
-      console.log(label);
       var el = document.querySelector("article[data-label=\"".concat(label, "\"]"));
-      console.log(el);
 
       if (el) {
         el.scrollIntoView({

@@ -72,7 +72,7 @@
         width: 320,
         height: 200,
         low: 0,
-        //high: 10000,
+        // high: 2000,
         showArea: true,
         axisX: {
             showLabel: false,
@@ -99,7 +99,7 @@
 
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         const headerSpan = document.querySelectorAll('h1 span')[1];
-        headerSpan.innerHTML = `on ${new Date(lasUpdatedOn * 1000).toLocaleDateString(undefined, options)}`
+        headerSpan.innerHTML = `on ${new Date(lasUpdatedOn).toLocaleDateString(undefined, options)}`
     }
 
 
@@ -108,6 +108,7 @@
         const countyKeys = Object.keys(counties)
         const countyInfectionsNumbers = data.currentDayStats.countyInfectionsNumbers;
         const historicalDataKeys = Object.keys(data.historicalData).filter(key => data.historicalData[key].countyInfectionsNumbers)
+
         const historicalData = historicalDataKeys
             .sort() // by date
             .map(key => data.historicalData[key].countyInfectionsNumbers)
@@ -233,9 +234,11 @@
             article.dataset.totalcases = totalCases;
             header.innerHTML = label + '<span>' + new Intl.NumberFormat().format(totalCases) + (newCases ? '  (+' + new Intl.NumberFormat().format(newCases) + ')' : '') + '</span>';
 
+            const days = sd.caseDiffs.length;
+            const caseDiffs = days > 100 ? sd.caseDiffs.filter((v, index) => index > days - 100) : sd.caseDiffs;
             const data = {
                 series: [
-                    [...sd.caseDiffs]
+                    [...caseDiffs]
                 ]
             };
 
@@ -264,7 +267,7 @@
             numberInfected,
             numberCured,
             numberDeceased,
-            lasUpdatedOn: data.lasUpdatedOn
+            lasUpdatedOn: data.currentDayStats.parsedOnString
         });
 
         if (!/Trident\/|MSIE/.test(window.navigator.userAgent)) {
@@ -317,7 +320,7 @@
 
             const key = a.dataset.key;
             let data = { series: [] };
-            data.series[0] = selection === 'newcases' ? [...transformedData[key.toUpperCase()].caseDiffs] : [...transformedData[key.toUpperCase()].cases]
+            data.series[0] = selection === 'newcases' ? [...transformedData[key.toUpperCase()].caseDiffs.filter((v,index, arr) => index > arr.length - 100 )] : [...transformedData[key.toUpperCase()].cases]
 
             const chart = chartRefereces[key];
             chart.update(data, smallChartOptions);
@@ -371,9 +374,7 @@
         const target = e.target;
         if (target.id) {
             const label = svgData[id].label;
-            console.log(label);
             const el = document.querySelector(`article[data-label="${label}"]`);
-            console.log(el);
             if (el) {
                 el.scrollIntoView({
                     behavior: 'smooth'
