@@ -390,16 +390,10 @@
     }
 
 
-    fetch('https://datelazi.ro/latestData.json')
+    fetch('https://datelazi.ro/_next/data/anOcTRuMkkoduIxsimMkE/index.json')
         .then(result => result.json())
         .then(use)
-        .catch(() => {
-            // try another one
-            fetch('https://di5ds1eotmbx1.cloudfront.net/latestData.json')
-                .then(result => result.json())
-                .then(use)
-                .catch(showError)
-        });
+        .catch(showError);
 
 
     window.traker = window.traker || {
