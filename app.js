@@ -410,7 +410,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     status.innerHTML = "Error loading data";
   };
 
-  fetch('https://datelazi.ro/_next/data/anOcTRuMkkoduIxsimMkE/index.json').then(function (result) {
+  fetch('https://datelazi.ro/_next/data/anOcTRuMkkoduIxsimMkE/index.json', {
+    mode: 'no-cors'
+  }).then(function (result) {
     return result.json();
   }).then(use)["catch"](showError);
   window.traker = window.traker || {

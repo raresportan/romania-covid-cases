@@ -390,7 +390,7 @@
     }
 
 
-    fetch('https://datelazi.ro/_next/data/anOcTRuMkkoduIxsimMkE/index.json')
+    fetch('https://datelazi.ro/_next/data/anOcTRuMkkoduIxsimMkE/index.json', { mode: 'no-cors' })
         .then(result => result.json())
         .then(use)
         .catch(showError);
